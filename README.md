@@ -37,7 +37,7 @@ The following **optional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='/week6-api/public/week-6.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src="/week6-api/public/week-6.gif">
 
 GIF created with Kap
 
