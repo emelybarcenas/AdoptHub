@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom'
 import Card from './Card';
+import BarGraph from './BarGraph';
+import PieChart from './PieChart';
 
 export default function List() {
   const API_KEY = import.meta.env.VITE_PETFINDER_API_KEY;
@@ -139,64 +142,98 @@ export default function List() {
   };
 
   return (
-    <div className="rounded-xl bg-gray-100 text-black mb-20 max-h-screen overflow-y-auto  p-10">
-      <div className="flex flex-row">
-        <Card title="Most Available Breed:" description={mostCommonBreed} />
-        <Card title="Most Available Type:" description={mostCommonType} />
-        <Card title="Average age:" description={averageAge} />
-      </div>
-<div className='flex gap-2.5 justify-center'>
-      <p>Breed:</p>
-      <input
-        type="search"
-        className="bg-white rounded-sm justify-items-center border-2 border-amber-600 pl-2"
-        id="search"
-        placeholder="Enter breed"
-        value={searchTerm}
-        onChange={handleSearch}
-      />
-      <p>Age:</p>
-      <select 
-      className='bg-white rounded-sm justify-items-center border-2 border-amber-600 pl-2'
-      value={dropDownSelection}
-      onChange={handleDropDown}
-      >
-        <option value="" disabled>Select Age</option>
-        <option value="baby">Baby</option>
-        <option value="young">Young</option>
-        <option value="adult">Adult</option>
-      </select>
-</div>  
-      <table className="w-full table-auto border-collapse">
-        <thead>
-          <tr className="text-left">
-            <th className="px-4 py-2 border-b">Name</th>
-            <th className="px-4 py-2 border-b">Breed</th>
-            <th className="px-4 py-2 border-b">Gender</th>
-            <th className="px-4 py-2 border-b">Age</th>
-            <th className="px-4 py-2 border-b">Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredPets.length > 0 ? (
-            filteredPets.map((pet) => (
-              <tr key={pet.id}>
-                <td className="px-4 py-2">{pet.name}</td>
-                <td className="px-4 py-2">{pet.breeds ? pet.breeds.primary : "N/A"}</td>
-                <td className="px-4 py-2">{pet.gender || "N/A"}</td>
-                <td className="px-4 py-2">{pet.age || "N/A"}</td>
-                <td className="px-4 py-2">{pet.type || "N/A"}</td>
+    <section className="flex w-full h-screen">
+    {/* Left section (Table) - 2/3 of the screen width */}
+    <div className="w-2/3 p-10 overflow-y-auto">
+      <div className="rounded-xl bg-gray-100 text-black mb-20 max-h-[80vh] overflow-y-auto"> {/* Set max-height */}
+        <div className="flex flex-row">
+          <Card title="Most Available Breed:" description={mostCommonBreed} />
+          <Card title="Most Available Type:" description={mostCommonType} />
+          <Card title="Average age:" description={averageAge} />
+        </div>
+        <div className="flex gap-2.5 justify-center">
+          <p>Breed:</p>
+          <input
+            type="search"
+            className="bg-white rounded-sm justify-items-center border-2 border-amber-600 pl-2"
+            id="search"
+            placeholder="Enter breed"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          <p>Age:</p>
+          <select
+            className="bg-white rounded-sm justify-items-center border-2 border-amber-600 pl-2"
+            value={dropDownSelection}
+            onChange={handleDropDown}
+          >
+            <option value="" disabled>
+              Select Age
+            </option>
+            <option value="baby">Baby</option>
+            <option value="young">Young</option>
+            <option value="adult">Adult</option>
+          </select>
+        </div>
+        <div className="overflow-y-auto max-h-[60vh]"> {/* Set max-height for scrollable table */}
+          <table className="w-full table-auto border-collapse">
+            <thead>
+              <tr className="text-left">
+                <th className="px-4 py-2 border-b">Name</th>
+                <th className="px-4 py-2 border-b">Breed</th>
+                <th className="px-4 py-2 border-b">Gender</th>
+                <th className="px-4 py-2 border-b">Age</th>
+                <th className="px-4 py-2 border-b">Type</th>
+                <th className="px-4 py-2 border-b">Details</th>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="text-center py-4">
-                No pets found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {filteredPets.length > 0 ? (
+                filteredPets.map((pet) => (
+                  <tr key={pet.id}>
+                    <td className="px-4 py-2">{pet.name}</td>
+                    <td className="px-4 py-2">{pet.breeds ? pet.breeds.primary : "N/A"}</td>
+                    <td className="px-4 py-2">{pet.gender || "N/A"}</td>
+                    <td className="px-4 py-2">{pet.age || "N/A"}</td>
+                    <td className="px-4 py-2">{pet.type || "N/A"}</td>
+                    <td className="px-4 py-2">
+                      <Link to={`/pet-details/${pet.id}`}>🔗</Link>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">
+                    No pets found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+  
+    {/* Right section - 1/3 of the screen width */}
+    <div className="w-1/3 p-10 flex flex-col  h-[91vh]">
+      {/* First Div - Takes up 50% of the height of the right section */}
+      <div className="bg-amber-600  p-5 flex flex-col m-2 rounded-xl justify-center align-center items-center">
+      <BarGraph pets={filteredPets} />
+      <h3>Pet Ages</h3>
+      </div>
+  
+      {/* Second Div - Takes up the remaining 50% height of the right section */}
+      <div className="bg-amber-600 flex flex-col p-5 m-2 rounded-xl justify-center align-center items-center ">
+        <PieChart pets={filteredPets} options={{
+          labels:{
+            color:''
+          }
+        }}/>
+        <h3>Pet Breeds</h3>
+      </div>
+    </div>
+  </section>
+  
+  
   );
 }
